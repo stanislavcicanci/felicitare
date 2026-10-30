@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>La Mulți Ani, Cristina ♡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;800&family=Dancing+Script:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#ffd3e2;
+  --rose:#ff9ec0;
+  --deep-rose:#e56b96;
+  --lavender:#d9c7ff;
+  --purple:#b39ddb;
+  --cream:#fff8f2;
+  --gold:#e9c46a;
+  --ink:#5c4360;
+  --glass:rgba(255,255,255,.58);
+  --shadow:0 24px 60px rgba(122,80,140,.18);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;overflow-x:hidden}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--cream);min-height:100vh}
+h1,h2,h3{font-family:"Playfair Display",serif;margin:0;line-height:1.08}
+p{margin:0}
+button{font:inherit;border:0;cursor:pointer}
+
+#cursor-glow{
+  position:fixed;top:0;left:0;width:320px;height:320px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,158,192,.30),rgba(179,157,219,.14) 45%,transparent 70%);
+  pointer-events:none;z-index:4;transform:translate(-50%,-50%);filter:blur(6px);
+}
+#spark-canvas,#fireworks{position:fixed;inset:0;width:100%;height:100%;pointer-events:none}
+#spark-canvas{z-index:60}
+#fireworks{z-index:8}
+
+/* Intro */
+#intro{
+  position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;
+  background:
+    radial-gradient(1200px 800px at 15% 15%,#ffe9f2,transparent 60%),
+    radial-gradient(1000px 700px at 85% 20%,#e6dcff,transparent 65%),
+    radial-gradient(900px 700px at 50% 100%,#fff1e2,transparent 70%),
+    linear-gradient(160deg,#fff7f9,#f5ecff 45%,#fff6ea);
+  transition:opacity 1.1s ease,visibility 1.1s ease;
+}
+#intro.hidden{opacity:0;visibility:hidden}
+.intro-inner{padding:2rem;position:relative;z-index:3}
+.eyebrow{font-size:.72rem;letter-spacing:.42em;text-transform:uppercase;color:#a179b8;opacity:0;animation:fadeUp 1s .2s forwards}
+.intro-title{font-size:clamp(2.5rem,8vw,5.5rem);font-weight:800;color:#6d4a78;margin:.4rem 0 .6rem;opacity:0;animation:fadeUp 1.2s .45s forwards}
+.intro-title em{font-style:normal;background:linear-gradient(90deg,#e56b96,#b39ddb,#e9c46a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro-sub{font-family:"Dancing Script",cursive;font-size:clamp(1.3rem,4vw,2rem);color:#916a9b;opacity:0;animation:fadeUp 1.2s .7s forwards}
+.gift-wrap{margin-top:clamp(1.5rem,5vh,3rem);perspective:900px;opacity:0;animation:fadeUp 1.2s .9s forwards}
+.gift{position:relative;width:180px;height:150px;margin:0 auto;background:transparent;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.gift:hover{transform:translateY(-6px) rotateX(5deg)}
+.gift-body{position:absolute;bottom:0;left:15px;width:150px;height:110px;border-radius:12px;background:linear-gradient(145deg,#ffb3cd,#f28bb3);box-shadow:inset 0 -12px 20px rgba(255,255,255,.35),0 20px 35px rgba(229,107,150,.35)}
+.gift-body::after{content:"";position:absolute;inset:0;border-radius:12px;background:linear-gradient(90deg,transparent 44%,rgba(255,255,255,.65) 44%,rgba(255,255,255,.65) 56%,transparent 56%)}
+.gift-lid{position:absolute;top:22px;left:5px;width:170px;height:38px;border-radius:12px;background:linear-gradient(145deg,#d9c7ff,#b39ddb);box-shadow:0 12px 25px rgba(122,80,140,.25);transform-origin:left center;transition:transform .9s cubic-bezier(.2,.8,.2,1);z-index:3}
+.gift-bow{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:56px;height:34px;z-index:4}
+.gift-bow::before,.gift-bow::after{content:"";position:absolute;top:0;width:28px;height:30px;border-radius:50% 50% 45% 45%;background:linear-gradient(145deg,#fff,#ffd3e2)}
+.gift-bow::before{left:0;transform:rotate(-18deg)}
+.gift-bow::after{right:0;transform:rotate(18deg)}
+.gift-bow span{position:absolute;left:50%;top:8px;width:12px;height:12px;border-radius:50%;background:var(--gold);transform:translateX(-50%)}
+.gift.open .gift-lid{transform:translateY(-75px) rotate(-28deg) translateX(-12px)}
+.gift-hint{margin-top:1.2rem;font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:#a179b8;animation:pulse 2.2s infinite}
+.glow-ring{position:absolute;left:50%;top:52%;width:280px;height:280px;border-radius:50%;transform:translate(-50%,-50%);border:1px solid rgba(229,107,150,.35);box-shadow:0 0 60px rgba(229,107,150,.25);animation:spinSlow 18s linear infinite}
+@keyframes giftPop{45%{transform:scale(1.07)}}
+@keyframes pulse{50%{opacity:1;transform:translateY(-4px)}}
+@keyframes spinSlow{to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+main{opacity:0;transition:opacity 1.2s ease}
+main.visible{opacity:1}
+section{position:relative;padding:clamp(5rem,12vh,9rem) 1.25rem;overflow:hidden}
+.shell{max-width:1120px;margin:0 auto;position:relative;z-index:3}
+.section-label{display:inline-flex;font-size:.68rem;letter-spacing:.34em;text-transform:uppercase;color:#a179b8;background:var(--glass);backdrop-filter:blur(12px);padding:.55rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow)}
+.section-title{font-size:clamp(2.1rem,6vw,4rem);color:#6d4a78;margin:1.1rem 0 .8rem}
+.section-text{max-width:640px;color:#7b5f82;font-size:1.02rem;line-height:1.8}
+
+#wishes{background:radial-gradient(700px 500px at 10% 20%,rgba(255,211,226,.7),transparent 65%),radial-gradient(800px 600px at 90% 10%,rgba(217,199,255,.65),transparent 60%),linear-gradient(180deg,#fff8f9,#fbf3ff)}
+.wish-hero{background:linear-gradient(145deg,rgba(255,255,255,.78),rgba(255,240,247,.62));border:1px solid rgba(255,255,255,.8);border-radius:34px;padding:clamp(2rem,5vw,4rem);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+.big-script{font-family:"Dancing Script",cursive;font-size:clamp(2rem,6vw,3.6rem);color:#e56b96}
+.wish-message p:not(.big-script){margin-top:1.3rem;max-width:640px;line-height:1.9;color:#7b5f82}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* Grădina refăcută */
+#garden{background:radial-gradient(900px 600px at 80% 0%,rgba(217,199,255,.55),transparent 60%),linear-gradient(180deg,#fff7fb,#f4ecff 70%,#fff8ef)}
+.garden-stage{
+  position:relative;height:520px;border-radius:38px;margin-top:2.5rem;overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.65),rgba(255,240,247,.45));
+  border:1px solid rgba(255,255,255,.75);box-shadow:var(--shadow);backdrop-filter:blur(10px);
+}
+.garden-ground{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(180deg,#e8f7e4,#d5efcf);border-radius:50% 50% 0 0/90px 90px 0 0}
+.garden-hint{position:absolute;bottom:1rem;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:#a179b8;background:rgba(255,255,255,.75);padding:.5rem .9rem;border-radius:999px;z-index:5}
+
+.flower{
+  position:absolute;bottom:58px;width:90px;height:190px;cursor:pointer;
+  transform-origin:bottom center;animation:sway 5.5s ease-in-out infinite;
+  -webkit-tap-highlight-color:transparent;user-select:none;
+}
+.flower .stem{
+  position:absolute;bottom:0;left:50%;width:6px;height:120px;margin-left:-3px;border-radius:6px;
+  background:linear-gradient(180deg,#8fc98a,#5fa86a);transform-origin:bottom center;
+}
+.flower .leaf{
+  position:absolute;bottom:48px;width:28px;height:14px;border-radius:999px;
+  background:#7cbf7f;transform-origin:right center;
+}
+.flower .leaf.left{left:-18px;transform:rotate(25deg)}
+.flower .leaf.right{right:-18px;transform:rotate(-25deg) scaleX(-1)}
+.bloom-head{
+  position:absolute;bottom:104px;left:50%;width:74px;height:74px;margin-left:-37px;
+  transform:scale(.12);opacity:.25;transition:transform 1s cubic-bezier(.2,.8,.2,1),opacity .8s ease;
+  transform-origin:center;
+}
+.flower.bloomed .bloom-head{transform:scale(1);opacity:1}
+.petal{
+  position:absolute;top:0;left:50%;width:30px;height:46px;margin-left:-15px;border-radius:50% 50% 45% 45%;
+  transform-origin:50% 100%;
+  box-shadow:inset 0 -8px 14px rgba(255,255,255,.45),0 6px 16px rgba(229,107,150,.18);
+}
+.petal.p1{transform:rotate(0deg) translateY(-14px)}
+.petal.p2{transform:rotate(60deg) translateY(-14px)}
+.petal.p3{transform:rotate(120deg) translateY(-14px)}
+.petal.p4{transform:rotate(180deg) translateY(-14px)}
+.petal.p5{transform:rotate(240deg) translateY(-14px)}
+.petal.p6{transform:rotate(300deg) translateY(-14px)}
+.flower-center{
+  position:absolute;top:50%;left:50%;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff8d6,#e9c46a);box-shadow:0 0 18px rgba(233,196,106,.65);z-index:2;
+}
+.flower:hover .bloom-head,.flower.bloomed .bloom-head{transform:scale(1);opacity:1}
+.flower:hover{animation-duration:3.5s}
+@keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+
+/* Tort */
+#cake-section{background:radial-gradient(800px 600px at 20% 20%,rgba(255,211,226,.65),transparent 65%),radial-gradient(700px 500px at 85% 80%,rgba(233,196,106,.16),transparent 60%),linear-gradient(180deg,#fff6f0,#fdeef6)}
+.cake-stage{display:grid;place-items:center;margin-top:2.5rem}
+.cake{position:relative;width:min(340px,82vw);height:300px;filter:drop-shadow(0 30px 45px rgba(229,107,150,.25));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.cake:hover{transform:translateY(-8px) scale(1.02)}
+.cake.glow{filter:drop-shadow(0 0 45px rgba(255,158,192,.85))}
+.cake-layer{position:absolute;left:50%;transform:translateX(-50%);border-radius:18px}
+.layer-bottom{bottom:0;width:300px;height:92px;background:linear-gradient(180deg,#fff0f5,#ffc2d6)}
+.layer-middle{bottom:82px;width:250px;height:80px;background:linear-gradient(180deg,#f6efff,#d9c7ff)}
+.layer-top{bottom:152px;width:200px;height:68px;background:linear-gradient(180deg,#fff8f2,#ffe0b8)}
+.frosting{position:absolute;height:20px;border-radius:999px;background:rgba(255,255,255,.9)}
+.frosting.b1{bottom:78px;width:300px;left:50%;transform:translateX(-50%)}
+.frosting.b2{bottom:150px;width:250px;left:50%;transform:translateX(-50%)}
+.frosting.b3{bottom:210px;width:200px;left:50%;transform:translateX(-50%)}
+.cherry{position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff8fab,#d94f74)}
+.candles{position:absolute;bottom:212px;left:50%;transform:translateX(-50%);display:flex;gap:18px}
+.candle{width:8px;height:46px;border-radius:4px;background:linear-gradient(180deg,#fff,#f3d9ff);position:relative}
+.flame{position:absolute;top:-18px;left:50%;width:12px;height:18px;transform:translateX(-50%) scale(0);background:radial-gradient(circle at 50% 70%,#fff6c8,#ffce54 45%,rgba(255,140,80,0) 75%);border-radius:50% 50% 50% 50%/60% 60% 40% 40%;transition:transform .45s cubic-bezier(.2,.8,.2,1);transform-origin:bottom center}
+.cake.lit .flame{transform:translateX(-50%) scale(1);animation:flicker .35s infinite alternate}
+@keyframes flicker{from{transform:translateX(-50%) scale(1) rotate(-2deg)}to{transform:translateX(-50%) scale(1.12) rotate(2deg)}}
+.cake-caption{margin-top:1.4rem;text-align:center;color:#a179b8;font-size:.82rem;letter-spacing:.22em;text-transform:uppercase}
+
+/* Carduri */
+#reasons{background:radial-gradient(900px 700px at 15% 10%,rgba(217,199,255,.5),transparent 60%),radial-gradient(800px 600px at 90% 90%,rgba(255,211,226,.55),transparent 65%),linear-gradient(180deg,#faf4ff,#fff7f8)}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.3rem;margin-top:2.6rem;perspective:1200px}
+.card{position:relative;padding:2rem 1.6rem;border-radius:28px;min-height:230px;background:linear-gradient(150deg,rgba(255,255,255,.75),rgba(255,240,247,.55));border:1px solid rgba(255,255,255,.85);backdrop-filter:blur(16px);box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease;opacity:0;transform:translateY(40px)}
+.card.in{opacity:1;transform:none}
+.card:hover{box-shadow:0 35px 70px rgba(122,80,140,.24)}
+.card-num{font-family:"Playfair Display",serif;font-size:2.4rem;font-weight:800;background:linear-gradient(90deg,#e56b96,#b39ddb);-webkit-background-clip:text;background-clip:text;color:transparent}
+.card h3{font-size:1.25rem;margin:.7rem 0 .6rem;color:#6d4a78}
+.card p{color:#7b5f82;line-height:1.7;font-size:.95rem}
+
+/* Final */
+#finale{min-height:100vh;display:grid;place-items:center;text-align:center;color:#fff;background:linear-gradient(180deg,#2b1b3d,#4b2c58 45%,#7a4b76)}
+#star-canvas{position:absolute;inset:0;width:100%;height:100%}
+.final-title{font-size:clamp(2.2rem,7vw,4.6rem);color:#fff;text-shadow:0 0 35px rgba(255,158,192,.55)}
+.final-sub{font-family:"Dancing Script",cursive;font-size:clamp(1.3rem,4vw,2.1rem);color:#ffd3e2;margin-top:1.2rem}
+.final-note{max-width:560px;margin:1.5rem auto 0;color:rgba(255,255,255,.78);line-height:1.85}
+.final-heart{margin-top:2.4rem;font-size:2.4rem;color:#ff9ec0;animation:heartbeat 1.6s infinite}
+@keyframes heartbeat{12%{transform:scale(1.18)}24%{transform:scale(1)}36%{transform:scale(1.12)}48%{transform:scale(1)}}
+
+.balloon{position:absolute;bottom:-160px;width:52px;height:66px;border-radius:50% 50% 48% 48%;opacity:.75;animation:floatUp linear infinite;pointer-events:none;z-index:1}
+@keyframes floatUp{to{transform:translateY(-120vh) rotate(12deg)}}
+
+footer{text-align:center;padding:2.5rem 1rem;color:#a179b8;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;background:#fff8f2}
+
+@media (max-width:640px){
+  .garden-stage{height:430px}
+  .flower{width:70px;height:150px}
+  .flower .stem{height:90px}
+  .bloom-head{bottom:78px;width:58px;height:58px;margin-left:-29px}
+  .petal{width:24px;height:36px;margin-left:-12px}
+  .cake{height:260px}
+  .layer-bottom{width:250px}.layer-middle{width:205px}.layer-top{width:165px}
+  .frosting.b1{width:250px}.frosting.b2{width:205px}.frosting.b3{width:165px}
+  .candles{gap:12px}.candle{height:38px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important;transition-duration:.001s!important}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-glow" aria-hidden="true"></div>
+<canvas id="fireworks" aria-hidden="true"></canvas>
+<canvas id="spark-canvas" aria-hidden="true"></canvas>
+
+<div id="intro">
+  <div class="glow-ring" aria-hidden="true"></div>
+  <div class="intro-inner">
+    <p class="eyebrow">O picătură de magie pentru tine</p>
+    <h1 class="intro-title">La Mulți Ani, <em>Cristina!</em> ♡</h1>
+    <p class="intro-sub">Astăzi este ziua ta...</p>
+    <div class="gift-wrap">
+      <button class="gift" id="gift" aria-label="Deschide surpriza ta de ziua ta">
+        <div class="gift-body"></div>
+        <div class="gift-lid"></div>
+        <div class="gift-bow"><span></span></div>
+      </button>
+      <p class="gift-hint">Atinge cadoul pentru a începe</p>
+    </div>
+  </div>
+</div>
+
+<main id="main">
+  <section id="wishes">
+    <div class="shell">
+      <span class="section-label reveal">Capitolul întâi ♡ Urări de ziua ta</span>
+      <div class="wish-hero reveal">
+        <div class="wish-message">
+          <p class="big-script">Dragă Cristina,</p>
+          <h2 class="section-title">Să fie ziua ta la fel de frumoasă precum lumina pe care o aduci în viețile celor din jur.</h2>
+          <p>De ziua ta, îmi doresc ca fiecare moment să fie cald și aurii: râsete care apar neașteptat, emoții frumoase care rămân cu tine și visuri care încep, încet, să se apropie.</p>
+          <p>Merită o zi plină de dulceață, surprize minunate și oameni care îți amintesc cât de multă lumină aduci în lume. La mulți ani, Cristina — să fie acest noul tău an cel mai magic.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="garden">
+    <div class="shell">
+      <span class="section-label reveal">Capitolul doi ♡ Flori magice</span>
+      <h2 class="section-title reveal">O grădină crescută din bucurie</h2>
+      <p class="section-text reveal">Atinge sau dă click pe flori pentru a le face să înflorească. Fiecare floare poartă o mică urare pentru tine.</p>
+
+      <div class="garden-stage reveal" id="gardenStage">
+        <div class="garden-ground"></div>
+        <p class="garden-hint">Atinge o floare pentru a o face să înflorească</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="cake-section">
+    <div class="shell">
+      <span class="section-label reveal">Capitolul trei ♡ Pune o dorință</span>
+      <h2 class="section-title reveal">Aprinde lumânările, Cristina</h2>
+      <p class="section-text reveal">Închide ochii pentru o secundă, gândește-te la ceva minunat, apoi atinge tortul.</p>
+      <div class="cake-stage reveal">
+        <button class="cake" id="cake" aria-label="Aprinde lumânările de ziua ta">
+          <div class="cake-layer layer-bottom"></div>
+          <div class="cake-layer layer-middle"></div>
+          <div class="cake-layer layer-top"></div>
+          <div class="frosting b1"></div>
+          <div class="frosting b2"></div>
+          <div class="frosting b3"></div>
+          <div class="cherry" style="left:calc(50% - 85px);bottom:168px"></div>
+          <div class="cherry" style="left:calc(50% + 70px);bottom:168px"></div>
+          <div class="cherry" style="left:calc(50% - 10px);bottom:228px"></div>
+          <div class="candles">
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+          </div>
+        </button>
+        <p class="cake-caption" id="cake-caption">Atinge tortul pentru a aprinde lumânările</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="reasons">
+    <div class="shell">
+      <span class="section-label reveal">Capitolul patru ♡ Motive să zâmbești</span>
+      <h2 class="section-title reveal">Mici urări, special pentru tine</h2>
+      <div class="cards" id="cards">
+        <article class="card"><span class="card-num">01</span><h3>Ești strălucitoare</h3><p>Să te vezi mereu așa cum te văd oamenii care te iubesc: luminoasă, bună și de neuitat.</p></article>
+        <article class="card"><span class="card-num">02</span><h3>Visază îndrăzneț</h3><p>Să găsească fiecare dorință pe care o șoptești anul acesta curajul de a deveni realitate.</p></article>
+        <article class="card"><span class="card-num">03</span><h3>Alege bucuria</h3><p>Să te găsească râsul des, chiar și în zilele obișnuite, și să rămână puțin mai mult decât te aștepți.</p></article>
+        <article class="card"><span class="card-num">04</span><h3>Simte-te iubită</h3><p>Să fii mereu înconjurată de căldură, blândețe și inimi care țin cu adevărat la tine.</p></article>
+        <article class="card"><span class="card-num">05</span><h3>Crește frumos</h3><p>Să aducă acest an aventuri noi, dimineți liniștite și momente care par desprinse dintr-un basm.</p></article>
+        <article class="card"><span class="card-num">06</span><h3>Strălucește liber</h3><p>Nu-ți micșora niciodată lumina, Cristina. Lumea este mai dulce pentru că tu ești în ea.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="finale">
+    <canvas id="star-canvas" aria-hidden="true"></canvas>
+    <div class="shell">
+      <span class="section-label reveal" style="color:#ffd3e2;background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)">Surpriza finală</span>
+      <h2 class="final-title reveal">Meriți toată fericirea din lume, Cristina!</h2>
+      <p class="final-sub reveal">La mulți ani, suflet frumos ♡</p>
+      <p class="final-note reveal">Să fie anul tău plin de iubire care te face să te simți în siguranță, vise care par posibile și momente atât de frumoase încât să vrei să le ții minte pentru totdeauna.</p>
+      <div class="final-heart reveal" aria-hidden="true">♡</div>
+    </div>
+  </section>
+
+  <footer>Făcut cu iubire, sclipici și puțină magie de ziua ta</footer>
+</main>
+
+<script>
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const rand=(a,b)=>a+Math.random()*(b-a);
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+  /* Glow cursor */
+  const glow=document.getElementById('cursor-glow');
+  let gx=innerWidth/2,gy=innerHeight/2,cx=gx,cy=gy;
+  addEventListener('pointermove',e=>{gx=e.clientX;gy=e.clientY;spawnSpark(e.clientX,e.clientY,1);});
+  (function moveGlow(){cx+=(gx-cx)*.12;cy+=(gy-cy)*.12;glow.style.transform=`translate(${cx-160}px,${cy-160}px)`;requestAnimationFrame(moveGlow);})();
+
+  /* Canvas */
+  const sc=document.getElementById('spark-canvas'),sx=sc.getContext('2d');
+  const fw=document.getElementById('fireworks'),fx=fw.getContext('2d');
+  function sizeCanvas(c){const d=Math.min(devicePixelRatio||1,2);c.width=innerWidth*d;c.height=innerHeight*d;c.getContext('2d').setTransform(d,0,0,d,0,0);}
+  function resizeAll(){sizeCanvas(sc);sizeCanvas(fw);}
+  addEventListener('resize',resizeAll);resizeAll();
+
+  const colors=['#ff9ec0','#d9c7ff','#e9c46a','#fff','#e56b96'];
+  let sparks=[],confetti=[],rockets=[];
+
+  function spawnSpark(x,y,n=3,burst=false){
+    if(reduced)return;
+    for(let i=0;i<n;i++){
+      const a=burst?rand(0,Math.PI*2):rand(-.5,.5)-Math.PI/2;
+      const sp=burst?rand(2,9):rand(.4,1.6);
+      sparks.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-(burst?1:0),life:1,r:rand(1,3.4),c:colors[Math.floor(rand(0,colors.length))]});
+    }
+  }
+  function confettiBurst(x,y,count=120){
+    if(reduced)return;
+    for(let i=0;i<count;i++){
+      const a=rand(0,Math.PI*2),sp=rand(3,12);
+      confetti.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-3,w:rand(4,9),h:rand(6,13),rot:rand(0,6),vr:rand(-.2,.2),c:colors[Math.floor(rand(0,colors.length))],life:1});
+    }
+  }
+  function launchFirework(){
+    if(reduced)return;
+    const x=rand(innerWidth*.15,innerWidth*.85);
+    rockets.push({x,y:innerHeight+10,ty:rand(innerHeight*.18,innerHeight*.45),vy:rand(-9,-6),c:colors[Math.floor(rand(0,colors.length))]});
+  }
+
+  (function draw(){
+    sx.clearRect(0,0,innerWidth,innerHeight);
+    sparks=sparks.filter(p=>p.life>0);
+    for(const p of sparks){
+      p.x+=p.vx;p.y+=p.vy;p.vy+=.045;p.vx*=.985;p.life-=.016;
+      sx.globalAlpha=Math.max(p.life,0);sx.fillStyle=p.c;
+      sx.beginPath();sx.arc(p.x,p.y,p.r*p.life,0,7);sx.fill();
+    }
+    fx.clearRect(0,0,innerWidth,innerHeight);
+    confetti=confetti.filter(c=>c.life>0&&c.y<innerHeight+50);
+    for(const c of confetti){
+      c.x+=c.vx;c.y+=c.vy;c.vy+=.18;c.vx*=.99;c.rot+=c.vr;c.life-=.006;
+      fx.save();fx.translate(c.x,c.y);fx.rotate(c.rot);fx.globalAlpha=Math.max(c.life,0);
+      fx.fillStyle=c.c;fx.fillRect(-c.w/2,-c.h/2,c.w,c.h);fx.restore();
+    }
+    rockets=rockets.filter(r=>r.y>r.ty);
+    for(const r of rockets){
+      r.y+=r.vy;fx.globalAlpha=.9;fx.fillStyle=r.c;
+      fx.beginPath();fx.arc(r.x,r.y,2.4,0,7);fx.fill();
+      if(r.y<=r.ty){confettiBurst(r.x,r.y,90);spawnSpark(r.x,r.y,25,true);}
+    }
+    fx.globalAlpha=1;sx.globalAlpha=1;
+    requestAnimationFrame(draw);
+  })();
+
+  /* Cadoul */
+  const intro=document.getElementById('intro'),main=document.getElementById('main'),gift=document.getElementById('gift');
+  gift.addEventListener('click',()=>{
+    gift.classList.add('open');
+    const r=gift.getBoundingClientRect();
+    confettiBurst(r.left+r.width/2,r.top+r.height/2,180);
+    spawnSpark(r.left+r.width/2,r.top+r.height/2,80,true);
+    setTimeout(()=>{
+      intro.classList.add('hidden');
+      main.classList.add('visible');
+      observeAll();
+      launchFirework();setTimeout(launchFirework,500);setTimeout(launchFirework,1000);
+    },750);
+  });
+
+  /* Grădina: flori HTML */
+  const garden=document.getElementById('gardenStage');
+  const palettes=[
+    ['#ff9ec0','#e56b96'],
+    ['#d9c7ff','#b39ddb'],
+    ['#ffe0a3','#e9c46a'],
+    ['#ffc2d6','#e56b96']
+  ];
+
+  function createFlower(){
+    const f=document.createElement('button');
+    f.className='flower';
+    f.type='button';
+    f.setAttribute('aria-label','Înflorire magică');
+
+    const scale=rand(.75,1.15);
+    f.style.left=rand(4,88)+'%';
+    f.style.transform=`scale(${scale})`;
+    f.style.animationDelay=rand(0,3)+'s';
+
+    const [light,dark]=palettes[Math.floor(rand(0,palettes.length))];
+
+    f.innerHTML=`
+      <div class="stem"></div>
+      <div class="leaf left"></div>
+      <div class="leaf right"></div>
+      <div class="bloom-head">
+        <div class="petal p1" style="background:linear-gradient(180deg,#fff,${light})"></div>
+        <div class="petal p2" style="background:linear-gradient(180deg,#fff,${light})"></div>
+        <div class="petal p3" style="background:linear-gradient(180deg,#fff,${light})"></div>
+        <div class="petal p4" style="background:linear-gradient(180deg,#fff,${light})"></div>
+        <div class="petal p5" style="background:linear-gradient(180deg,#fff,${light})"></div>
+        <div class="petal p6" style="background:linear-gradient(180deg,#fff,${light})"></div>
+        <div class="flower-center"></div>
+      </div>
+    `;
+
+    function bloom(){
+      if(f.classList.contains('bloomed'))return;
+      f.classList.add('bloomed');
+      const r=f.getBoundingClientRect();
+      spawnSpark(r.left+r.width/2,r.top+r.height*.35,22,true);
+      confettiBurst(r.left+r.width/2,r.top+r.height*.35,28);
+    }
+
+    f.addEventListener('click',bloom);
+    f.addEventListener('pointerenter',bloom);
+    f.addEventListener('touchstart',bloom,{passive:true});
+
+    garden.appendChild(f);
+  }
+
+  for(let i=0;i<18;i++) createFlower();
+
+  /* Tortul */
+  const cake=document.getElementById('cake'),cap=document.getElementById('cake-caption');
+  cake.addEventListener('click',()=>{
+    if(cake.classList.contains('lit'))return;
+    cake.classList.add('lit','glow');
+    cap.textContent='Dorința ta este pe drum ♡';
+    const r=cake.getBoundingClientRect();
+    confettiBurst(r.left+r.width/2,r.top+r.height*.35,160);
+    spawnSpark(r.left+r.width/2,r.top+r.height*.35,70,true);
+    setTimeout(()=>cake.classList.remove('glow'),2600);
+  });
+
+  /* Reveal */
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.16});
+  function observeAll(){document.querySelectorAll('.reveal,.card').forEach((el,i)=>{el.style.transitionDelay=(i%6)*.08+'s';io.observe(el);});}
+
+  /* Balloane */
+  ['wishes','garden','cake-section','reasons'].forEach(id=>{
+    const sec=document.getElementById(id);
+    for(let i=0;i<5;i++){
+      const b=document.createElement('div');
+      b.className='balloon';
+      b.style.left=rand(3,92)+'%';
+      b.style.background=colors[Math.floor(rand(0,colors.length))];
+      b.style.animationDuration=rand(16,28)+'s';
+      b.style.animationDelay=rand(0,14)+'s';
+      sec.appendChild(b);
+    }
+  });
+
+  /* Stele și inimi */
+  const starCanvas=document.getElementById('star-canvas'),stx=starCanvas.getContext('2d');
+  let stars=[],hearts=[];
+  function initStars(){
+    const d=Math.min(devicePixelRatio||1,2);
+    starCanvas.width=innerWidth*d;starCanvas.height=innerHeight*d;stx.setTransform(d,0,0,d,0,0);
+    stars=Array.from({length:innerWidth<700?110:220},()=>({x:rand(0,innerWidth),y:rand(0,innerHeight),r:rand(.4,1.7),a:rand(.2,1),s:rand(.002,.012)}));
+    hearts=Array.from({length:innerWidth<700?10:18},()=>({x:rand(0,innerWidth),y:rand(0,innerHeight),s:rand(8,20),v:rand(.15,.6),a:rand(.15,.5)}));
+  }
+  initStars();addEventListener('resize',initStars);
+
+  (function drawStars(){
+    stx.clearRect(0,0,innerWidth,innerHeight);
+    for(const s of stars){
+      s.a+=s.s;if(s.a>1||s.a<.15)s.s*=-1;
+      stx.globalAlpha=clamp(s.a,.1,1);stx.fillStyle='#fff';
+      stx.beginPath();stx.arc(s.x,s.y,s.r,0,7);stx.fill();
+    }
+    stx.fillStyle='#ff9ec0';
+    for(const h of hearts){
+      h.y-=h.v;if(h.y<-30){h.y=innerHeight+30;h.x=rand(0,innerWidth);}
+      stx.globalAlpha=h.a;stx.font=`${h.s}px serif`;stx.fillText('♡',h.x,h.y);
+    }
+    stx.globalAlpha=1;requestAnimationFrame(drawStars);
+  })();
+
+  /* Artificii la final */
+  const finaleIO=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        launchFirework();setTimeout(launchFirework,350);setTimeout(launchFirework,750);
+        if(!finaleIO.fired){finaleIO.fired=true;setInterval(()=>{if(Math.random()<.35)launchFirework();},1800);}
+      }
+    });
+  },{threshold:.35});
+  finaleIO.observe(document.getElementById('finale'));
+
+  addEventListener('pointerdown',e=>spawnSpark(e.clientX,e.clientY,10,true));
+})();
+</script>
+</body>
+</html>
